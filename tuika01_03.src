@@ -1,0 +1,26 @@
+; 定数宣言
+DATA1	.EQU	8AH
+
+; RAM変数領域
+	.SECTION RAM,DATA
+	.ORG	00000080H
+SET_1:	.BLKW	1
+SET_2:	.BLKW	2
+
+; プログラム
+	.SECTION PROC,CODE
+	.ORG	0FFFF8100H
+	
+HAJIME:	MOV.L #SET_1,R11		; アドレス設定  (アドレスの転送は常にサイズはLとなる）
+	MOV.L #DATA1,[R11]		; データ書き込み(メモリへの転送は、転送元と転送先のサイズを考える）
+	MOV.L #SET_2,R12		; アドレス設定  (アドレスの転送は常にサイズはLとなる）
+	MOVU.B #DATA1,[R12]		; データ書き込み(メモリへの転送は、転送元と転送先のサイズを考える）
+		
+OWARI:	BRA	OWARI			; 終了ループ
+
+; パワーオンリセット
+	.SECTION RESET,ROMDATA
+	.ORG	0FFFFFFFCH
+	.LWORD	0FFFF8100H
+; アセンブル停止
+	.END
